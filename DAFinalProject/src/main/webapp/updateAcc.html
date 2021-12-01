@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <title>Update Account</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="Joe Meier"/>
+        <link rel="stylesheet" href="styles/global.css"/>
+    </head>
+    <body style="background-color: rgb(194, 194, 194);">
+        <br>
+
+        <div class="header">
+            <span>Update Account</span>
+            <a href="login.html" style="color:white;">Login</a>
+        </div>
+
+        <div class="indexNav">
+            <table align="center"><tr><td>
+            <button class="b1" onclick="location.href='accountInfo.html'">
+                <span class="b2">Account Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='accountData.html'">
+                <span class="b2">Security Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='accountClimate.html'">
+                <span class="b2">Climate Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button id = "exit" class="b1" onclick="location.href='index.html'">
+                <span class="b2">Sign Out Account</span>
+            </button></td></tr>
+            </table> 
+        </div>
+    
+        <br>
+        <div class="body">
+               <table align="center">
+                    <tr>
+                        <td>
+                            <h5>Username:</h5>
+                        </td>
+                        <td>
+                            <span id='user'></span>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Password:</h5>
+                        </td>
+                        <td>
+                            <input id='pw' type='password'/>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h5>First Name:</h5>
+                        </td>
+                        <td>
+                            <input id='fname' type='text'/>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Last Name:</h5>
+                        </td>
+                        <td>
+                            <input id='lname' type='text'/>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Email:</h5>
+                        </td>
+                        <td>
+                            <input id='email' type='text'/>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h5>Tier:</h5>
+                        </td>
+                    <td>
+                        <select name="tier" id="tier">
+                            <option value="Basic">Basic</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Purple">Purple</option>
+                            </select></td>
+                    </tr>
+                </table>
+            <button id="update" class="b1">
+              <span class="b2">
+                Update
+              </span>
+            </button>
+            <br><br><span id='error'></span><br>
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $('#exit').on('click', function () {
+               window.sessionStorage.setItem('userAccount', ''); 
+            });
+             $('#update').on('click', function () {
+               var username = window.sessionStorage.getItem('userAccount');
+               if ($('#pw').val().trim() === ''){
+                   $('#error').text('Password cannot be blank');
+                   return false;
+               }
+               if ($('#pw').val().trim().length > 15){
+                   $('#error').text('Password max length 15 characters');
+                   return false;
+               }               
+               if ($('#fname').val().trim() === ''){
+                   $('#error').text('First Name cannot be blank');
+                   return false;
+               }
+               if ($('#fname').val().trim().length > 25){
+                   $('#error').text('First Name max length 25 characters');
+                   return false;
+               }               
+               if ($('#lname').val().trim() === ''){
+                   $('#error').text('Last Name cannot be blank');
+                   return false;
+               }
+               if ($('#fname').val().trim().length > 25){
+                   $('#error').text('Last Name max length 25 characters');
+                   return false;
+               }
+               if ($('#email').val().trim() === ''){
+                   $('#error').text('Email cannot be blank');
+                   return false;
+               }
+               const regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+               if (regex.test($('#email').val().trim())=== false){
+                   $('#error').text('Invalid email format');
+                   return false;
+               }               
+               var account = {
+                 username: username,
+                 password: $('#pw').val(),
+                 fname: $('#fname').val(),
+                 lname: $('#lname').val(),
+                 email: $('#email').val(),
+                 tier: $('#tier').val()
+               };
+               
+                $.ajax({
+                    url: 'api/account/' + username,
+                    type: 'post',
+                    data: JSON.stringify(account),
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType: 'json',
+                    success: function () {
+                        window.location.href = "accountInfo.html";
+                    },
+                    error: function () {
+                        $('#error').text(username);
+                    }
+                });       
+            });
+             $(document).ready(function() {
+                var username = window.sessionStorage.getItem('userAccount');
+                $.ajax({
+                    url: 'api/account/' + username,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (acc) {
+                        $('#user').text(acc.username);
+                        $('#pw').val(acc.password);
+                        $('#fname').val(acc.fname);
+                        $('#lname').val(acc.lname);
+                        $('#email').val(acc.email);
+                        $('#tier').val(acc.tier);
+                    },
+                    error: function () {
+                         alert('Communication failed');
+                    }
+                });
+            });
+
+        </script>    
+    </body>
+</html>

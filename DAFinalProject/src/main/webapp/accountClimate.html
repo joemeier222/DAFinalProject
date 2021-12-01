@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <title>Climate Information</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="Joe Meier"/>
+        <link rel="stylesheet" href="styles/global.css"/>
+    </head>
+    <body style="background-color: rgb(194, 194, 194);">
+        <br>
+
+        <div class="header">
+            <span>Climate Details</span>
+            <a href="login.html" style="color:white;">Login</a>
+        </div>
+
+        <div class="indexNav">
+            <table align="center"><tr><td>
+            <button class="b1" onclick="location.href='accountInfo.html'">
+                <span class="b2">Account Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='updateAcc.html'">
+                <span class="b2">Update Account</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='accountData.html'">
+                <span class="b2">Security Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button id = "exit" class="b1" onclick="location.href='index.html'">
+                <span class="b2">Sign Out Account</span>
+            </button></td></tr>
+            </table>         
+        </div>
+    
+        <br>
+        <div class="body">
+        <br>
+        <canvas id="tChart" class="chart" style="width:100%;"></canvas>
+        <table align="center">
+            <thead>         
+            <tr>
+                <th>
+                    <h5 style="color: red;">Humidity</h5>
+                </th>
+                <th>
+                    <h5 style="color: green;">Temperature</h5>
+                </th>
+                <th>
+                    <h5 style="color: blue;">Heat Index</h5>
+                </th>
+            </tr>
+                </thead>
+            <tbody id="tbody">
+                </tbody>
+        </table>
+        
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script>
+            $('#exit').on('click', function () {
+                window.sessionStorage.setItem('userAccount', ''); 
+            });
+            let x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            let humidity = [];
+            let temp = [];
+            let hi = [];
+            let chartElement = new Chart("tChart", {
+                type: "line",
+                data: {
+                    labels: x,
+                    datasets: [{ 
+                        data: humidity,
+                        borderColor: "red",
+                        fill: false
+                    }, {
+                        data: temp,
+                        borderColor: "green",
+                        fill: false
+                    }, {
+                        data: hi,
+                        borderColor: "blue",
+                        fill: false
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+            
+            $(document).ready(function() {
+                setInterval(function() {
+                    getData();
+                }, 500); 
+            });
+            
+            function getData() {
+                var username = window.sessionStorage.getItem('userAccount');
+                $.ajax({
+                    url: 'api/data/' + username,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (dataSet) {
+                         $('#error').html(`<span style="color:green;">Connected!</span>`);
+                        var tr = ``;
+                        for (var i = 0; i < dataSet.length; i++){
+                            var data = dataSet[i];
+                            tr += '<tr><td>' + data.humidity + '</td>' +
+                                '<td>' + data.temperature + '</td>' +
+                                '<td>' + data.heatIndex + '</td></tr>';
+                            humidity[i] = data.humidity;
+                            temp[i] = data.temperature;
+                            hi[i] = data.heatIndex;
+                        }
+                        chartElement.data.datasets[0].data = (humidity);
+                        chartElement.data.datasets[1].data = (temp);
+                        chartElement.data.datasets[2].data = (hi);
+                        chartElement.update();
+                        
+                        $(`#tbody`).html(tr);
+                        
+                    },
+                    error: function () {
+                        $('#error').html(`<span style="color:red;">Reconnecting...</span>`);
+                    }
+                });
+            }
+        </script>    
+    </body>
+</html>

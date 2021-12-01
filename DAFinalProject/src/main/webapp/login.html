@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <title>Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="Joe Meier"/>
+        <link rel="stylesheet" href="styles/global.css"/>
+    </head>
+    <body style="background-color: rgb(194, 194, 194);">
+        <br>
+
+        <div class="header">
+            <span>Sign In</span>
+            <a href="login.html" style="color:white;">Login</a>
+        </div>
+
+        <div class="indexNav">
+            <table align="center"><tr><td>
+            <button class="b1" onclick="location.href='createAcc.html'">
+                <span class="b2">Create Account</span>
+            </button></td></tr>
+            </table>        
+        </div>
+    
+        <br>
+        <div class="body">
+            <table align="center" >
+                <tr>
+                    <td>
+                        <h3>Username:</h3>
+                    </td>
+                    <td>
+                        <input name="username" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3>Password:</h3>
+                    </td>
+                    <td>
+                        <input name="password"  type="password" /></td>
+                </tr>
+            </table>
+
+            <button id="login" class="b1">
+              <span class="b2">
+                Login
+              </span>
+            </button>
+            <br><br><span id='error'></span><br>
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script>
+            $('#login').on('click', function () {
+                $('#error').text("");
+               var username = $('input[name="username"]').val();
+               if (username === ''){
+                   $('#error').text('Username cannot be blank');
+                   return false;
+               }
+               if ($('input[name="password"]').val().trim() === ''){
+                   $('#error').text('Password cannot be blank');
+                   return false;
+               }
+                $.ajax({
+                    url: 'api/account/' + username,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (acc) {
+                        if(acc.password === $('input[name="password"]').val()){
+                            window.sessionStorage.setItem('userAccount', acc.username);
+                            window.location.href = "accountInfo.html";
+                        }
+                        else{
+                            $('#password').text("");
+                            $('#error').text("Invalid Password");
+                        }
+                    },
+                    error: function () {
+                        $('#error').text('Invalid');
+                    }
+                });
+            });
+        </script>    
+    </body>
+</html>

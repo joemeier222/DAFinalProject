@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <title>Create Account</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="Joe Meier"/>
+        <link rel="stylesheet" href="styles/global.css"/>
+    </head>
+    <body style="background-color: rgb(194, 194, 194);">
+        <br>
+
+        <div class="header">
+            <span>Create Account</span>
+            <a href="login.html" style="color:white;">Login</a>
+        </div>
+
+        <div class="indexNav">
+            <table align="center"><tr><td>
+            <button class="b1" onclick="location.href='login.html'">
+                <span class="b2">Sign In</span>
+            </button></td></tr>
+            </table>      
+        </div>
+    
+        <br>
+        <div class="body">
+            <table align="center">
+                <tr>
+                    <td>
+                        <h5>Username:</h5>
+                    </td>
+                    <td>
+                        <input id="user" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>Password:</h5>
+                    </td>
+                    <td>
+                        <input id="pw" type="password" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>First Name:</h5>
+                    </td>
+                    <td>
+                        <input id="fname" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>Last Name:</h5>
+                    </td>
+                    <td>
+                        <input id="lname" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>Email:</h5>
+                    </td>
+                    <td>
+                        <input id="email" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        <h5>Tier:</h5>
+                    </td>
+                    <td>
+                        <select name="tier" id="tier">
+                            <option value="Basic">Basic</option>
+                            <option value="Premium">Premium</option>
+                            <option value="Purple">Purple</option>
+                            </select></td>
+                </tr>
+            </table>
+
+            <button id="create" class="b1">
+              <span class="b2">
+                Create
+              </span>
+            </button>
+            <br><br><span id='error'></span><br>
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script>
+            $('#create').on('click', function () {
+               if ($('#user').val().trim() === ''){
+                   $('#error').text('Username cannot be blank');
+                   return false;
+               }
+               if ($('#user').val().trim().length > 25){
+                   $('#error').text('Username max length 25 characters');
+                   return false;
+               }
+               if ($('#pw').val().trim() === ''){
+                   $('#error').text('Password cannot be blank');
+                   return false;
+               }
+               if ($('#pw').val().trim().length > 15){
+                   $('#error').text('Password max length 15 characters');
+                   return false;
+               }               
+               if ($('#fname').val().trim() === ''){
+                   $('#error').text('First Name cannot be blank');
+                   return false;
+               }
+               if ($('#fname').val().trim().length > 25){
+                   $('#error').text('First Name max length 25 characters');
+                   return false;
+               }               
+               if ($('#lname').val().trim() === ''){
+                   $('#error').text('Last Name cannot be blank');
+                   return false;
+               }
+               if ($('#fname').val().trim().length > 25){
+                   $('#error').text('Last Name max length 25 characters');
+                   return false;
+               }
+               if ($('#email').val().trim() === ''){
+                   $('#error').text('Email cannot be blank');
+                   return false;
+               }
+               const regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+               if (regex.test($('#email').val().trim())=== false){
+                   $('#error').text('Invalid email format');
+                   return false;
+               }
+
+               var acc = {
+                 username: $('#user').val(),
+                 password: $('#pw').val(),
+                 fname: $('#fname').val(),
+                 lname: $('#lname').val(),
+                 email: $('#email').val(),
+                 tier: $('#tier').val()
+               };
+               
+                $.ajax({
+                    url: 'api/accounts',
+                    type: 'post',
+                    data: JSON.stringify(acc),
+                    contentType: 'application/json;charset=UTF-8',
+                    dataType: 'json',
+                    success: function (acc) {
+                        window.sessionStorage.setItem('userAccount', acc.username);
+                        window.location.href = "accountInfo.html";
+                    },
+                    error: function () {
+                        $('#error').text('Invalid');
+                    }
+                });
+            });
+        </script>    
+    </body>
+</html>

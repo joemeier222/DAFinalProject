@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <title>Security Information</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="Joe Meier"/>
+        <link rel="stylesheet" href="styles/global.css"/>
+    </head>
+    <body style="background-color: rgb(194, 194, 194);">
+        <br>
+
+        <div class="header">
+            <span>Security Details</span>
+            <a href="login.html" style="color:white;">Login</a>
+        </div>
+
+        <div class="indexNav">
+            <table align="center"><tr><td>
+            <button class="b1" onclick="location.href='accountInfo.html'">
+                <span class="b2">Account Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='updateAcc.html'">
+                <span class="b2">Update Account</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='accountClimate.html'">
+                <span class="b2">Climate Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button id = "exit" class="b1" onclick="location.href='index.html'">
+                <span class="b2">Sign Out Account</span>
+            </button></td></tr>
+            </table>         
+        </div>
+    
+        <br>
+        <div class="body">
+        <br>
+        <br><span id='error'></span>
+        <table align="center">
+            <thead>
+                <tr><th></th>
+                <th>
+                    <h5>Armed:</h5>
+                </th>
+                </tr>
+            <tr>
+                <th>
+                    <h5>Date Time</h5>
+                </th>
+                <th>
+                    <h5>Sensor One</h5>
+                </th>
+                <th>
+                    <h5>Sensor Two</h5>
+                </th>
+            </tr>
+                </thead>
+            <tbody id="tbody">
+                </tbody>
+        </table>
+        
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script>
+            $('#exit').on('click', function () {
+               window.sessionStorage.setItem('userAccount', ''); 
+            });
+             $(document).ready(function() {
+                setInterval(function() {
+                    getData();
+                }, 500);
+            });
+            function getData () {
+                var username = window.sessionStorage.getItem('userAccount');
+                $.ajax({
+                    url: 'api/data/' + username,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (dataSet) {
+                        $('#error').html(`<span style="color:green;">Connected!</span>`);
+                        var tr = ``;
+                        for (var i = 0; i < dataSet.length; i++){
+                            var data = dataSet[i];
+                            tr += '<tr><td>' + data.dateTime + '</td>';
+                            if (data.sensorOne === '1'){
+                                tr += '<td style="background-color:#4F2D7F"><h5>Motion Detected</h5></td>';
+                            }else{
+                                tr += '<td><h5>No Motion Detected</h5></td>';
+                            }
+                            if (data.sensorTwo === '1'){
+                                tr += '<td style="background-color:#4F2D7F"><h5>Motion Detected</h5></td>';
+                            }else{
+                                tr += '<td><h5>No Motion Detected</h5></td>';
+                            }
+                            tr += '</td></tr>';
+                        }
+                        $(`#tbody`).html(tr);
+                    },
+                    error: function () {
+                        $('#error').html(`<span style="color:red;">Reconnecting...</span>`);
+                    }
+                });
+            }
+ 
+        </script>    
+    </body>
+</html>

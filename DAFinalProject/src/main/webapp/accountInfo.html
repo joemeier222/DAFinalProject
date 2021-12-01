@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <title>Account Information</title>
+       <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="Joe Meier"/>
+        <link rel="stylesheet" href="styles/global.css"/>
+    </head>
+    <body style="background-color: rgb(194, 194, 194);">
+        <br>
+
+        <div class="header">
+            <span>Account Details</span>
+            <a href="login.html" style="color:white;">Login</a>
+        </div>
+
+        <div class="indexNav">
+            <table align="center"><tr><td>
+            <button class="b1" onclick="location.href='updateAcc.html'">
+                <span class="b2">Update Account</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='accountData.html'">
+                <span class="b2">Security Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button class="b1" onclick="location.href='accountClimate.html'">
+                <span class="b2">Climate Details</span>
+            </button></td></tr>
+            <tr><td>
+            <button id = "exit" class="b1" onclick="location.href='index.html'">
+                <span class="b2">Sign Out Account</span>
+            </button></td></tr>
+            </table>         
+        </div>
+    
+        <br>
+        <div class="body">
+               <table align="center">
+        <tr>
+            <td>
+                <h5>Username:</h5>
+            </td>
+            <td>
+                <span id='user'></span>
+        </tr>
+        <tr>
+            <td>
+                <h5>First Name:</h5>
+            </td>
+            <td>
+                <span id='fname'></span>
+        </tr>
+        <tr>
+            <td>
+                <h5>Last Name:</h5>
+            </td>
+            <td>
+                <span id='lname'></span>
+        </tr>
+        <tr>
+            <td>
+                <h5>Email:</h5>
+            </td>
+            <td>
+                <span id='email'></span>
+        </tr>
+        <tr>
+            <td>
+                <h5>Tier:</h5>
+            </td>
+            <td>
+                <span id='tier'></span>
+        </tr>
+    </table>
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script>
+            $('#exit').on('click', function () {
+               window.sessionStorage.setItem('userAccount', ''); 
+            });
+             $(document).ready(function() {
+                var username = window.sessionStorage.getItem('userAccount');
+                $.ajax({
+                    url: 'api/account/' + username,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (acc) {
+                        $('#user').text(acc.username);
+                        $('#pw').text(acc.password);
+                        $('#fname').text(acc.fname);
+                        $('#lname').text(acc.lname);
+                        $('#email').text(acc.email);
+                        $('#tier').text(acc.tier);
+                    },
+                    error: function () {
+                        alert('Communication failed');
+                    }
+                });
+            });
+        </script>    
+    </body>
+</html>

@@ -1,0 +1,61 @@
+.header{
+    position: relative;
+    z-index: 4;
+    font-size: 22px;
+    background-color: white;
+    color: #282A35;
+    padding: 15px;
+    font-family: 'Garamond', serif;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%); 
+}
+
+.indexNav{
+    background-color: rgb(79,45,127);
+    height: 100%;
+    color: white;
+    padding: 15px;
+    padding-top: 20px;
+    margin: -4px 0 4px 0;
+    width: 204px;
+    position: fixed;
+    font-family: 'Garamond', serif;
+    cursor: pointer;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%); 
+}
+
+.body{
+    margin-left: 350px;
+    margin-right: 100px;
+    text-align: center;
+    padding-left: 30px;
+    background-color: rgb(243, 243, 243);
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%); 
+}
+
+.b1 {
+    background: rgb(68, 38, 109);
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    border-radius: 50%;
+    font-family: 'Garamond', serif;
+  }
+
+.b2 {
+    display: block;
+    padding: 12px 42px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    background: rgb(70,45,127);
+    color: white;
+    transform: translateY(-6px);
+    border-radius: 50%;
+  }
+
+.b1:active .b2{
+    transform:translateY(-2px);
+}
